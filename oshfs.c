@@ -36,7 +36,7 @@ int find_block()
     return -1;
 }
 void delete_block(struct filenode *node,int num)
-{//delete a data block
+{//delete data blocks
     if (num>node->filelen)
         num=node->filelen;
     int mem_locat;
@@ -51,7 +51,7 @@ void delete_block(struct filenode *node,int num)
     }
 }
 int allocate_newblock(struct filenode *node,int num)
-{//allocate a new data block
+{//allocate new data blocks
     int i;
     if(num>blank_block)
         return 0;//内存空间不足
