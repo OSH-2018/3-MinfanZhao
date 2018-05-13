@@ -19,6 +19,7 @@ $ dd if=testfile of=/dev/null # 测试文件读取
 $ rm testfile
 $ ls -al # testfile是否成功删除
 ```
+测试时最高写入速度可达 450MB/s。
 
 ### block 设计
 
