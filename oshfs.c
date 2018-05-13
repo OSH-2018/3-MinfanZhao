@@ -39,9 +39,12 @@ void delete_block(struct filenode *node,int num)
 {//delete a data block
     if (num>node->filelen)
         num=node->filelen;
+    int mem_locat;
     while(num>0)
     {
-        munmap(mem[node->content[node->filelen-1]],BLOCKSIZE);
+    	mem_locat=node->content[node->filelen-1];
+    	now_block=mem_locat>0?mem_locat-1:BLOCKNR;
+        munmap(mem[mem_locat],BLOCKSIZE);
         num--;
         node->filelen--;
         blank_block++;
