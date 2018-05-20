@@ -21,6 +21,8 @@ $ ls -al # testfile是否成功删除
 ```
 测试时最高写入速度可达 450MB/s。
 
+> 在将 now_block 由 mem[0] 所存放的 root 文件的 mem_num 项替代后，写入速度降到 200MB/s
+ 
 ### block 设计
 
 将 4GB 内存分为 64K 个 64K 大小的 block，使用一个 `*mem[BLOCKNR]` 数组来标记和指向。
