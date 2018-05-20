@@ -17,19 +17,19 @@ struct filenode {
     struct stat st;//144字节
     struct filenode *next;
 };//共64k
-int now_block=0;
 static const size_t size = 4 * 1024 * 1024 * (size_t)1024;
 static void *mem[BLOCKNR];
 int blank_block=BLOCKNR;
 
 int find_block()
 {//find an unused block
-    int i=now_block;
+    struct filenode *root = (struct filenode *)mem[0];
+    int now_block=root->mem_num,i;
     for (i=(now_block+1)%BLOCKNR;i!=now_block;i=(i+1)%BLOCKNR)
     {
         if(mem[i]==NULL)
         {
-            now_block=i;
+            root->mem_num=i;
             return i;
         }
     }
@@ -37,14 +37,16 @@ int find_block()
 }
 void delete_block(struct filenode *node,int num)
 {//delete data blocks
+    struct filenode *root = (struct filenode *)mem[0];
     if (num>node->filelen)
         num=node->filelen;
     int mem_locat;
     while(num>0)
     {
     	mem_locat=node->content[node->filelen-1];
-    	now_block=mem_locat>0?mem_locat-1:BLOCKNR;
+    	root->mem_num=mem_locat>0?mem_locat-1:BLOCKNR;
         munmap(mem[mem_locat],BLOCKSIZE);
+        mem[mem_locat]=NULL;
         num--;
         node->filelen--;
         blank_block++;
@@ -107,7 +109,6 @@ static int create_filenode(const char *filename, const struct stat *st)
         root->next=newnode;
     }
 }
-
 static void *oshfs_init(struct fuse_conn_info *conn)
 {
     mem[0]=mmap(NULL,BLOCKSIZE,PROT_READ | PROT_WRITE,MAP_PRIVATE | MAP_ANONYMOUS,-1,0);
